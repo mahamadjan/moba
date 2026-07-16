@@ -101,7 +101,7 @@ export function CartSidebar() {
                       {/* Delete Button */}
                       <button 
                         onClick={() => removeItem(item.id)}
-                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg hover:bg-red-400 z-10"
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg hover:bg-red-400 z-10"
                         aria-label="Удалить"
                       >
                         <Trash2 className="w-4 h-4" />
