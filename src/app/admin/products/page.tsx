@@ -264,8 +264,8 @@ export default function AdminProducts() {
                 ))}
 
                 {/* Upload Button */}
-                <label className="relative w-full pt-[100%] border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="relative w-full pt-[100%] border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                     <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
                     <span className="text-xs text-foreground/40 font-medium">Добавить</span>
                   </div>
@@ -275,9 +275,9 @@ export default function AdminProducts() {
                     accept="image/jpeg, image/png, image/webp" 
                     multiple
                     onChange={handleImageChange}
-                    className="hidden" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" 
                   />
-                </label>
+                </div>
               </div>
             </div>
 
