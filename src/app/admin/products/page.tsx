@@ -16,10 +16,11 @@ const DEFAULT_CATEGORIES = [
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
   // Form State
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -30,12 +31,12 @@ export default function AdminProducts() {
   const [isDiscount, setIsDiscount] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
 
   const supabase = createClient();
 
   useEffect(() => {
     fetchProducts();
-    // fetchCategories(); // Uncomment when categories table is populated
   }, []);
 
   const fetchProducts = async () => {
@@ -59,71 +60,109 @@ export default function AdminProducts() {
     }
   };
 
+  const handleEdit = (product: any) => {
+    setEditingProductId(product.id);
+    setName(product.name || "");
+    setDescription(product.description || "");
+    setPrice(product.price ? product.price.toString() : "");
+    setOldPrice(product.old_price ? product.old_price.toString() : "");
+    setCategory(product.category || "phones");
+    setIsHit(product.is_hit || false);
+    setIsNew(product.is_new || false);
+    setIsDiscount(product.is_discount || false);
+    setExistingImageUrl(product.image_url || null);
+    setImagePreview(product.image_url || null);
+    setImageFile(null);
+    setIsFormOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !price || !imageFile) {
-      alert("Пожалуйста, заполните название, цену и добавьте фото");
+    if (!name || !price || (!imageFile && !existingImageUrl)) {
+      alert("Пожалуйста, заполните название, цену и фото");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // 1. Upload Image to Supabase Storage
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `product-images/${fileName}`;
+      let finalImageUrl = existingImageUrl;
 
-      const { error: uploadError } = await supabase.storage
-        .from('products')
-        .upload(filePath, imageFile);
+      // 1. Upload new image if provided
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `product-images/${fileName}`;
 
-      if (uploadError) throw uploadError;
+        const { error: uploadError } = await supabase.storage
+          .from('products')
+          .upload(filePath, imageFile);
 
-      // 2. Get Public URL for the image
-      const { data: { publicUrl } } = supabase.storage
-        .from('products')
-        .getPublicUrl(filePath);
+        if (uploadError) throw uploadError;
 
-      // 3. Save Product to Database
-      // Note: We use category string directly here for simplicity since we haven't linked a real category table yet.
-      // In a strict foreign key setup, you'd need the real category UUID.
-      const { error: insertError } = await supabase.from('products').insert([
-        {
-          name,
-          description: description || null,
-          price: parseFloat(price),
-          old_price: oldPrice ? parseFloat(oldPrice) : null,
-          image_url: publicUrl,
-          is_hit: isHit,
-          is_new: isNew,
-          is_discount: isDiscount || !!oldPrice,
-          category: category // We use the new text column 'category' instead of the UUID 'category_id'
-        }
-      ]);
+        const { data: { publicUrl } } = supabase.storage
+          .from('products')
+          .getPublicUrl(filePath);
+          
+        finalImageUrl = publicUrl;
+      }
 
-      if (insertError) throw insertError;
+      // 2. Prepare Data
+      const productData = {
+        name,
+        description: description || null,
+        price: parseFloat(price),
+        old_price: oldPrice ? parseFloat(oldPrice) : null,
+        image_url: finalImageUrl,
+        is_hit: isHit,
+        is_new: isNew,
+        is_discount: isDiscount || !!oldPrice,
+        category
+      };
 
-      alert("Товар успешно добавлен!");
-      setIsAdding(false);
+      // 3. Save or Update Product
+      if (editingProductId) {
+        const { error: updateError } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', editingProductId);
+          
+        if (updateError) throw updateError;
+        alert("Товар успешно обновлен!");
+      } else {
+        const { error: insertError } = await supabase
+          .from('products')
+          .insert([productData]);
+          
+        if (insertError) throw insertError;
+        alert("Товар успешно добавлен!");
+      }
+
+      setIsFormOpen(false);
       resetForm();
       fetchProducts();
       
     } catch (error: any) {
       console.error(error);
-      alert("Ошибка: Убедитесь, что вы выполнили SQL-запрос для создания таблиц базы данных! " + error.message);
+      alert("Ошибка: " + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Удалить этот товар?")) return;
-    await supabase.from('products').delete().eq('id', id);
-    fetchProducts();
+    if (!confirm("Удалить этот товар? Действие необратимо.")) return;
+    try {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+      fetchProducts();
+    } catch (error: any) {
+      alert("Ошибка при удалении: " + error.message);
+    }
   };
 
   const resetForm = () => {
+    setEditingProductId(null);
     setName("");
     setDescription("");
     setPrice("");
@@ -134,25 +173,33 @@ export default function AdminProducts() {
     setIsDiscount(false);
     setImageFile(null);
     setImagePreview(null);
+    setExistingImageUrl(null);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    resetForm();
   };
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Управление товарами</h1>
-        {!isAdding && (
-          <Button onClick={() => setIsAdding(true)} className="gap-2 font-semibold">
+        {!isFormOpen && (
+          <Button onClick={() => setIsFormOpen(true)} className="gap-2 font-semibold">
             <Plus className="w-5 h-5" />
             Добавить товар
           </Button>
         )}
       </div>
 
-      {isAdding ? (
+      {isFormOpen ? (
         <div className="bg-[#161616] border border-white/5 rounded-3xl p-6 md:p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white">Добавление нового товара</h2>
-            <button onClick={() => setIsAdding(false)} className="text-white/50 hover:text-white">Отмена</button>
+            <h2 className="text-xl font-bold text-white">
+              {editingProductId ? "Редактирование товара" : "Добавление нового товара"}
+            </h2>
+            <button onClick={closeForm} className="text-white/50 hover:text-white">Отмена</button>
           </div>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -182,7 +229,7 @@ export default function AdminProducts() {
                   accept="image/*" 
                   onChange={handleImageChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                  required
+                  required={!existingImageUrl}
                 />
               </div>
             </div>
@@ -264,7 +311,7 @@ export default function AdminProducts() {
               </div>
 
               <Button type="submit" disabled={isLoading} className="mt-auto w-full py-4 text-base font-bold">
-                {isLoading ? "Сохранение в базу..." : "Добавить товар на сайт"}
+                {isLoading ? "Сохранение..." : (editingProductId ? "Сохранить изменения" : "Добавить товар на сайт")}
               </Button>
             </div>
           </form>
@@ -333,7 +380,7 @@ export default function AdminProducts() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-md transition-colors">
+                        <button onClick={() => handleEdit(product)} className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-md transition-colors">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleDelete(product.id)} className="p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors">
