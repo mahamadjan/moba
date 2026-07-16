@@ -75,6 +75,7 @@ export function Header() {
   };
 
   return (
+    <>
     <header
       className={clsx(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
@@ -211,26 +212,27 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-      />
-      
-      <ProfileModal 
-        isOpen={isProfileModalOpen} 
-        onClose={() => setIsProfileModalOpen(false)} 
-        user={user}
-        onSignOut={async () => {
-          import("@/utils/supabase/client").then(async ({ createClient }) => {
-            const supabase = createClient();
-            await supabase.auth.signOut();
-            setIsProfileModalOpen(false);
-          });
-        }}
-      />
-      
-      <CartSidebar />
     </header>
+
+    <AuthModal 
+      isOpen={isAuthModalOpen} 
+      onClose={() => setIsAuthModalOpen(false)} 
+    />
+    
+    <ProfileModal 
+      isOpen={isProfileModalOpen} 
+      onClose={() => setIsProfileModalOpen(false)} 
+      user={user}
+      onSignOut={async () => {
+        import("@/utils/supabase/client").then(async ({ createClient }) => {
+          const supabase = createClient();
+          await supabase.auth.signOut();
+          setIsProfileModalOpen(false);
+        });
+      }}
+    />
+    
+    <CartSidebar />
+    </>
   );
 }
