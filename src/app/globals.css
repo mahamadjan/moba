@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --primary: #FFD400;
+  --primary-foreground: #111111;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #111111;
+  --accent: #E60012;
+  --accent-foreground: #ffffff;
+  
+  --card: #f9fafb;
+  --card-border: rgba(0,0,0,0.08);
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(0,0,0,0.1);
+  --glass-shadow: rgba(0,0,0,0.05);
+  --input-bg: #f3f4f6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --primary: #FFD400;
+  --primary-foreground: #111111;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --accent: #E60012;
+  --accent-foreground: #ffffff;
+  
+  --card: #111111;
+  --card-border: rgba(255,255,255,0.05);
+  --glass-bg: rgba(0,0,0,0.4);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-shadow: rgba(0,0,0,0.3);
+  --input-bg: #1a1a1a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-input: var(--input-bg);
+  --font-sans: 'Inter', var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer utilities {
+  .glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px var(--glass-shadow);
+  }
+  .glass-dark {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+  }
+  .liquid-glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(255,212,0,0.15);
+  }
+  .glow {
+    box-shadow: 0 0 20px rgba(255, 212, 0, 0.3);
+  }
+  .glow-hover:hover {
+    box-shadow: 0 0 30px rgba(255, 212, 0, 0.6);
+  }
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 212, 0, 0.8);
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Animations from page.tsx */
+@keyframes shineSweep {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.animate-shine {
+  background: linear-gradient(
+    110deg,
+    #FFD400 20%,
+    var(--foreground) 40%,
+    var(--foreground) 60%,
+    #FFD400 80%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shineSweep 4s linear infinite;
+}
+
+@keyframes marqueeHero {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

@@ -1,0 +1,47 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#111111"/>
+  
+  <!-- Subtle Grid/Glow Background -->
+  <circle cx="200" cy="200" r="150" fill="url(#glowGradient)" opacity="0.5" />
+  
+  <!-- Phone Body (Titanium style) -->
+  <rect x="120" y="50" width="160" height="300" rx="30" fill="url(#bodyGradient)" stroke="#333" stroke-width="4"/>
+  
+  <!-- Screen -->
+  <rect x="125" y="55" width="150" height="290" rx="25" fill="#000" />
+  
+  <!-- Screen Content / Reflection -->
+  <path d="M125 55 Q200 150 275 55 L275 100 Q200 200 125 100 Z" fill="url(#reflectionGradient)" opacity="0.3"/>
+  
+  <!-- Camera Island / Dynamic Island -->
+  <rect x="160" y="65" width="80" height="20" rx="10" fill="#111" />
+  <circle cx="170" cy="75" r="5" fill="#333" />
+  <circle cx="230" cy="75" r="5" fill="#333" />
+  
+  <!-- Logo (Abstract) -->
+  <circle cx="200" cy="200" r="20" fill="none" stroke="#333" stroke-width="2" />
+  <path d="M195 200 L205 200 M200 195 L200 205" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Brand Text -->
+  <text x="200" y="320" font-family="sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle" letter-spacing="2">SMARTPHONE</text>
+
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#FFD400" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#111111" stop-opacity="0" />
+    </radialGradient>
+    
+    <linearGradient id="bodyGradient" x1="120" y1="50" x2="280" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E2E2E2" />
+      <stop offset="50%" stop-color="#999999" />
+      <stop offset="100%" stop-color="#4A4A4A" />
+    </linearGradient>
+
+    <linearGradient id="reflectionGradient" x1="125" y1="55" x2="275" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
