@@ -207,7 +207,10 @@ export default function AdminProducts() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Управление товарами</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-bold text-foreground">Управление товарами</h1>
+          <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded w-fit">Версия 7.0 (С кнопкой Выбрать файлы)</span>
+        </div>
         {!isFormOpen && (
           <Button onClick={() => setIsFormOpen(true)} className="gap-2 font-semibold">
             <Plus className="w-5 h-5" />
