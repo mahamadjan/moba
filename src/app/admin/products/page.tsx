@@ -184,7 +184,7 @@ export default function AdminProducts() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-white">Управление товарами</h1>
+        <h1 className="text-3xl font-bold text-foreground">Управление товарами</h1>
         {!isFormOpen && (
           <Button onClick={() => setIsFormOpen(true)} className="gap-2 font-semibold">
             <Plus className="w-5 h-5" />
@@ -194,21 +194,21 @@ export default function AdminProducts() {
       </div>
 
       {isFormOpen ? (
-        <div className="bg-[#161616] border border-white/5 rounded-3xl p-6 md:p-8">
+        <div className="bg-card border border-card-border rounded-3xl p-6 md:p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-foreground">
               {editingProductId ? "Редактирование товара" : "Добавление нового товара"}
             </h2>
-            <button onClick={closeForm} className="text-white/50 hover:text-white">Отмена</button>
+            <button onClick={closeForm} className="text-foreground/50 hover:text-foreground">Отмена</button>
           </div>
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Left Column - Image Upload */}
             <div className="flex flex-col gap-4">
-              <label className="text-sm font-medium text-white/70">Фотография товара *</label>
+              <label className="text-sm font-medium text-foreground/70">Фотография товара *</label>
               <div 
-                className={`relative flex flex-col items-center justify-center w-full aspect-square md:aspect-auto md:h-80 border-2 border-dashed rounded-3xl overflow-hidden transition-colors ${imagePreview ? 'border-primary/50 bg-primary/5' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                className={`relative flex flex-col items-center justify-center w-full aspect-square md:aspect-auto md:h-80 border-2 border-dashed rounded-3xl overflow-hidden transition-colors ${imagePreview ? 'border-primary/50 bg-primary/5' : 'border-card-border bg-input hover:bg-input/80'}`}
               >
                 {imagePreview ? (
                   <>
@@ -219,9 +219,9 @@ export default function AdminProducts() {
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center p-6">
-                    <ImageIcon className="w-12 h-12 text-white/20 mb-4" />
-                    <p className="text-white/70 font-medium mb-1">Нажмите для загрузки</p>
-                    <p className="text-xs text-white/40">PNG, JPG или WebP до 5MB</p>
+                    <ImageIcon className="w-12 h-12 text-foreground/20 mb-4" />
+                    <p className="text-foreground/70 font-medium mb-1">Нажмите для загрузки</p>
+                    <p className="text-xs text-foreground/40">PNG, JPG или WebP до 5MB</p>
                   </div>
                 )}
                 <input 
@@ -237,57 +237,57 @@ export default function AdminProducts() {
             {/* Right Column - Details */}
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-white/70">Модель / Название *</label>
+                <label className="text-sm font-medium text-foreground/70">Модель / Название *</label>
                 <input 
                   type="text" 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Например: iPhone 15 Pro Max 256GB"
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none transition-colors"
+                  className="bg-input border border-card-border rounded-xl px-4 py-3 text-foreground focus:border-primary/50 outline-none transition-colors"
                   required
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-white/70">Описание и Характеристики</label>
+                <label className="text-sm font-medium text-foreground/70">Описание и Характеристики</label>
                 <textarea 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Опишите товар, добавьте характеристики (память, процессор, камера). Можно использовать переносы строк."
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none transition-colors min-h-[120px] custom-scrollbar"
+                  className="bg-input border border-card-border rounded-xl px-4 py-3 text-foreground focus:border-primary/50 outline-none transition-colors min-h-[120px] custom-scrollbar"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-white/70">Цена (сом) *</label>
+                  <label className="text-sm font-medium text-foreground/70">Цена (сом) *</label>
                   <input 
                     type="number" 
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="120000"
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none transition-colors"
+                    className="bg-input border border-card-border rounded-xl px-4 py-3 text-foreground focus:border-primary/50 outline-none transition-colors"
                     required
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-white/70">Старая цена (для скидки)</label>
+                  <label className="text-sm font-medium text-foreground/70">Старая цена (для скидки)</label>
                   <input 
                     type="number" 
                     value={oldPrice}
                     onChange={(e) => setOldPrice(e.target.value)}
                     placeholder="135000"
-                    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none transition-colors"
+                    className="bg-input border border-card-border rounded-xl px-4 py-3 text-foreground focus:border-primary/50 outline-none transition-colors"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-white/70">Категория</label>
+                <label className="text-sm font-medium text-foreground/70">Категория</label>
                 <select 
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="bg-[#222] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none transition-colors appearance-none"
+                  className="bg-input border border-card-border rounded-xl px-4 py-3 text-foreground focus:border-primary/50 outline-none transition-colors appearance-none"
                 >
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -296,48 +296,48 @@ export default function AdminProducts() {
               </div>
 
               <div className="flex flex-wrap gap-4 mt-2">
-                <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer">
-                  <input type="checkbox" checked={isHit} onChange={(e) => setIsHit(e.target.checked)} className="rounded border-white/10 bg-white/5 text-primary focus:ring-primary/50" />
+                <label className="flex items-center gap-2 text-sm text-foreground/70 cursor-pointer">
+                  <input type="checkbox" checked={isHit} onChange={(e) => setIsHit(e.target.checked)} className="rounded border-card-border bg-input text-primary focus:ring-primary/50" />
                   Хит продаж
                 </label>
-                <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer">
-                  <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} className="rounded border-white/10 bg-white/5 text-primary focus:ring-primary/50" />
+                <label className="flex items-center gap-2 text-sm text-foreground/70 cursor-pointer">
+                  <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} className="rounded border-card-border bg-input text-primary focus:ring-primary/50" />
                   Новинка
                 </label>
-                <label className="flex items-center gap-2 text-sm text-white/70 cursor-pointer">
-                  <input type="checkbox" checked={isDiscount} onChange={(e) => setIsDiscount(e.target.checked)} className="rounded border-white/10 bg-white/5 text-primary focus:ring-primary/50" />
+                <label className="flex items-center gap-2 text-sm text-foreground/70 cursor-pointer">
+                  <input type="checkbox" checked={isDiscount} onChange={(e) => setIsDiscount(e.target.checked)} className="rounded border-card-border bg-input text-primary focus:ring-primary/50" />
                   Акция (Скидка)
                 </label>
               </div>
 
-              <Button type="submit" disabled={isLoading} className="mt-auto w-full py-4 text-base font-bold">
+              <Button type="submit" disabled={isLoading} className="mt-auto w-full py-4 text-base font-bold text-primary-foreground">
                 {isLoading ? "Сохранение..." : (editingProductId ? "Сохранить изменения" : "Добавить товар на сайт")}
               </Button>
             </div>
           </form>
         </div>
       ) : (
-        <div className="bg-[#161616] border border-white/5 rounded-3xl overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-white/5 flex items-center gap-4">
+        <div className="bg-card border border-card-border rounded-3xl overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-card-border flex items-center gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
               <input 
                 type="text" 
                 placeholder="Поиск по названию..." 
-                className="w-full bg-white/5 border border-white/5 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:border-white/20 outline-none transition-colors"
+                className="w-full bg-input border border-card-border rounded-lg pl-10 pr-4 py-2 text-sm text-foreground focus:border-primary/50 outline-none transition-colors"
               />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="border-white/10 text-xs py-1.5 h-auto">Все</Button>
-              <Button variant="ghost" className="text-white/50 text-xs py-1.5 h-auto hover:text-white">Телефоны</Button>
-              <Button variant="ghost" className="text-white/50 text-xs py-1.5 h-auto hover:text-white">Аксессуары</Button>
+              <Button variant="outline" className="border-card-border text-xs py-1.5 h-auto text-foreground">Все</Button>
+              <Button variant="ghost" className="text-foreground/50 text-xs py-1.5 h-auto hover:text-foreground">Телефоны</Button>
+              <Button variant="ghost" className="text-foreground/50 text-xs py-1.5 h-auto hover:text-foreground">Аксессуары</Button>
             </div>
           </div>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-white/40 bg-white/[0.02]">
+                <tr className="border-b border-card-border text-xs uppercase tracking-wider text-foreground/40 bg-foreground/[0.02]">
                   <th className="p-4 font-medium">Товар</th>
                   <th className="p-4 font-medium">Категория</th>
                   <th className="p-4 font-medium">Цена</th>
@@ -347,28 +347,28 @@ export default function AdminProducts() {
               </thead>
               <tbody>
                 {products.length > 0 ? products.map((product) => (
-                  <tr key={product.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                  <tr key={product.id} className="border-b border-card-border hover:bg-foreground/[0.02] transition-colors group">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-white/5 flex-shrink-0 overflow-hidden">
+                        <div className="w-10 h-10 rounded-lg bg-foreground/5 flex-shrink-0 overflow-hidden">
                           <img src={product.image_url} alt="" className="w-full h-full object-cover" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-white">{product.name}</p>
-                          <p className="text-xs text-white/40">{product.id.substring(0,8)}</p>
+                          <p className="text-sm font-medium text-foreground">{product.name}</p>
+                          <p className="text-xs text-foreground/40">{product.id.substring(0,8)}</p>
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 text-xs text-white/60">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-foreground/5 text-xs text-foreground/60">
                         <Tag className="w-3 h-3" />
                         Товар
                       </span>
                     </td>
                     <td className="p-4">
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium text-white">{product.price.toLocaleString()} с</span>
-                        {product.old_price && <span className="text-xs text-white/40 line-through">{product.old_price.toLocaleString()} с</span>}
+                        <span className="text-sm font-medium text-foreground">{product.price.toLocaleString()} с</span>
+                        {product.old_price && <span className="text-xs text-foreground/40 line-through">{product.old_price.toLocaleString()} с</span>}
                       </div>
                     </td>
                     <td className="p-4">
@@ -379,8 +379,9 @@ export default function AdminProducts() {
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleEdit(product)} className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-md transition-colors">
+                      {/* Убрал opacity-0 чтобы кнопки всегда было видно и на телефоне тоже */}
+                      <div className="flex items-center justify-end gap-2 transition-opacity">
+                        <button onClick={() => handleEdit(product)} className="p-1.5 text-foreground/50 hover:text-foreground hover:bg-foreground/10 rounded-md transition-colors">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button onClick={() => handleDelete(product.id)} className="p-1.5 text-red-500/50 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors">
@@ -391,7 +392,7 @@ export default function AdminProducts() {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-white/40">
+                    <td colSpan={5} className="p-8 text-center text-foreground/40">
                       У вас пока нет добавленных товаров. Нажмите "Добавить товар".
                       <br/>
                       <span className="text-xs text-red-400 mt-2 block">(Или вы еще не выполнили SQL-запрос для базы данных)</span>

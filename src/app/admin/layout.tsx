@@ -33,7 +33,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -45,11 +45,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Admin Sidebar */}
-      <aside className="w-full md:w-64 bg-[#111] border-b md:border-b-0 md:border-r border-white/5 flex flex-col">
-        <div className="p-6 border-b border-white/5 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+      <aside className="w-full md:w-64 bg-card border-b md:border-b-0 md:border-r border-card-border flex flex-col">
+        <div className="p-6 border-b border-card-border flex items-center justify-between">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             Админ-панель
           </h2>
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                   isActive 
                     ? "bg-primary/10 text-primary font-medium" 
-                    : "text-white/60 hover:text-white hover:bg-white/5"
+                    : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -75,10 +75,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
         
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-card-border">
           <Link 
             href="/"
-            className="flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition-colors mb-2"
+            className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors mb-2"
           >
             <ArrowLeft className="w-5 h-5" />
             Вернуться на сайт
@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               await supabase.auth.signOut();
               router.push("/");
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-red-500/70 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
           >
             <LogOut className="w-5 h-5" />
             Выйти
