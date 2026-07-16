@@ -38,7 +38,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     // Авто-конвертация логина moba.kg в валидный email (gmail), так как Supabase может блокировать несуществующие домены (.kg)
     let loginEmail = email.trim().toLowerCase();
-    if (loginEmail === "moba.kg" || loginEmail === "admin@moba.kg") {
+    if (loginEmail === "moba.kg" || loginEmail === "admin@moba.kg" || loginEmail === "superadmin@moba.kg") {
       loginEmail = "dastan.admin2026@gmail.com";
     }
 

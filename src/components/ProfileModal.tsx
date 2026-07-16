@@ -76,7 +76,8 @@ export function ProfileModal({ isOpen, onClose, user, onSignOut }: ProfileModalP
   };
 
   // Реальная защита: админку видит только конкретная почта
-  const isAdmin = user?.email === 'admin@moba.kg' || user?.email === 'moba.kg' || user?.email === 'YOUR_GOOGLE_EMAIL_HERE';
+  const adminEmails = ['admin@moba.kg', 'moba.kg', 'superadmin@moba.kg', 'dastan.admin2026@gmail.com'];
+  const isAdmin = user?.email && adminEmails.includes(user.email.toLowerCase());
 
   return (
     <AnimatePresence>
