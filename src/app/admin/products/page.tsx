@@ -11,6 +11,9 @@ const DEFAULT_CATEGORIES = [
   { id: "accessories", name: "Аксессуары" },
   { id: "tablets", name: "Планшеты" },
   { id: "laptops", name: "Ноутбуки" },
+  { id: "watches", name: "Часы" },
+  { id: "cameras", name: "Камера" },
+  { id: "other", name: "Прочее" },
 ];
 
 export default function AdminProducts() {
