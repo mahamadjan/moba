@@ -237,12 +237,12 @@ export default function AdminProducts() {
               <div className="grid grid-cols-3 gap-2">
                 {/* Existing Images */}
                 {existingImages.map((img, idx) => (
-                  <div key={`existing-${idx}`} className="relative aspect-square border border-card-border rounded-xl overflow-hidden group">
-                    <img src={img} alt={`Existing ${idx}`} className="w-full h-full object-cover" />
+                  <div key={`existing-${idx}`} className="relative w-full pt-[100%] border border-card-border rounded-xl overflow-hidden group">
+                    <img src={img} alt={`Existing ${idx}`} className="absolute inset-0 w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeExistingImage(idx)}
-                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 z-10"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -251,12 +251,12 @@ export default function AdminProducts() {
                 
                 {/* New Previews */}
                 {imagePreviews.map((img, idx) => (
-                  <div key={`new-${idx}`} className="relative aspect-square border border-primary/50 bg-primary/5 rounded-xl overflow-hidden group">
-                    <img src={img} alt={`New ${idx}`} className="w-full h-full object-cover" />
+                  <div key={`new-${idx}`} className="relative w-full pt-[100%] border border-primary/50 bg-primary/5 rounded-xl overflow-hidden group">
+                    <img src={img} alt={`New ${idx}`} className="absolute inset-0 w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeNewImage(idx)}
-                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 z-10"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -264,13 +264,15 @@ export default function AdminProducts() {
                 ))}
 
                 {/* Upload Button */}
-                <label className="relative aspect-square flex flex-col items-center justify-center border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
-                  <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
-                  <span className="text-xs text-foreground/40 font-medium">Добавить</span>
+                <label className="relative w-full pt-[100%] border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
+                    <span className="text-xs text-foreground/40 font-medium">Добавить</span>
+                  </div>
                   <input 
                     key={`file-input-${imageFiles.length}-${existingImages.length}`}
                     type="file" 
-                    accept="image/*" 
+                    accept="image/jpeg, image/png, image/webp" 
                     multiple
                     onChange={handleImageChange}
                     className="hidden" 
