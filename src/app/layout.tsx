@@ -14,6 +14,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "moba.KG — Лучшие смартфоны Кыргызстана",
   description: "Продажа телефонов, аксессуаров, ремонт техники и доставка по всему Кыргызстану.",
+  appleWebApp: {
+    capable: true,
+    title: "moba.kg",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({
