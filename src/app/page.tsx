@@ -100,7 +100,7 @@ export default function Home() {
                 onClick={() => window.location.href = `/product/${p.id}`}
                 className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] mx-3 md:mx-4 rounded-3xl overflow-hidden group/item shrink-0 border-2 border-primary bg-transparent cursor-pointer hover:shadow-[0_0_25px_rgba(255,212,0,0.4)] transition-all flex items-center justify-center"
               >
-                <img src={p.image_url} className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" alt={p.name} />
+                <img src={p.image_url?.split(',')[0] || ''} className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" alt={p.name} />
               </div>
             ))}
           </div>
@@ -164,7 +164,7 @@ export default function Home() {
                 name: product.name,
                 price: product.price,
                 oldPrice: product.old_price,
-                imageUrl: product.image_url,
+                imageUrl: product.image_url?.split(',')[0] || '',
                 isNew: product.is_new,
                 isHit: product.is_hit
               }} />

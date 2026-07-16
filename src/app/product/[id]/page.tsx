@@ -14,6 +14,7 @@ export default function ProductDetailsPage() {
 
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,6 +31,9 @@ export default function ProductDetailsPage() {
         console.error("Error fetching product:", error);
       } else {
         setProduct(data);
+        if (data.image_url) {
+          setSelectedImage(data.image_url.split(',')[0]);
+        }
       }
       setLoading(false);
     };
@@ -60,13 +64,11 @@ export default function ProductDetailsPage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      imageUrl: product.image_url,
+      imageUrl: product.image_url?.split(',')[0] || '',
     });
-    // Optional: Redirect to cart page here if the user prefers that, 
-    // but since they just asked to fix the product page, we'll just add it.
   };
 
-
+  const images = product.image_url ? product.image_url.split(',') : [];
 
   return (
     <div className="min-h-screen pt-24 pb-28 md:pt-28 md:pb-24">
@@ -85,7 +87,7 @@ export default function ProductDetailsPage() {
         <div className="bg-card border border-card-border rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
           
           {/* TOP/LEFT: Photo Area */}
-          <div className="w-full md:w-1/2 bg-foreground/5 relative flex items-center justify-center p-8 sm:p-12 min-h-[300px] md:min-h-[500px]">
+          <div className="w-full md:w-1/2 bg-foreground/5 relative flex flex-col p-6 sm:p-8 min-h-[300px] md:min-h-[500px]">
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
               {product.is_discount && (
@@ -100,11 +102,31 @@ export default function ProductDetailsPage() {
               )}
             </div>
             
-            <img 
-              src={product.image_url} 
-              alt={product.name}
-              className="w-full h-full max-h-[400px] object-contain drop-shadow-2xl"
-            />
+            {/* Main Image */}
+            <div className="flex-1 flex items-center justify-center mb-6">
+              <img 
+                src={selectedImage} 
+                alt={product.name}
+                className="w-full h-full max-h-[350px] object-contain drop-shadow-2xl transition-all duration-300"
+              />
+            </div>
+
+            {/* Thumbnails */}
+            {images.length > 1 && (
+              <div className="flex items-center justify-center gap-3 mt-auto overflow-x-auto custom-scrollbar pb-2">
+                {images.map((img: string, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 overflow-hidden shrink-0 transition-all ${
+                      selectedImage === img ? 'border-primary shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-card-border hover:border-primary/50'
+                    }`}
+                  >
+                    <img src={img} className="w-full h-full object-cover bg-white/5 p-1" alt={`Thumbnail ${idx}`} />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* BOTTOM/RIGHT: Details Area */}
@@ -142,7 +164,7 @@ export default function ProductDetailsPage() {
             </div>
 
             {/* Price & Cart Actions (More Compact & Animated) */}
-            <div className="bg-foreground/[0.03] rounded-2xl p-4 sm:p-5 mb-8 border border-foreground/5 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="bg-foreground/[0.03] rounded-2xl p-4 sm:p-5 mb-8 border border-foreground/5 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mt-auto">
               <div className="flex flex-col">
                 {product.old_price && (
                   <span className="text-foreground/40 text-sm line-through mb-1">
@@ -169,7 +191,7 @@ export default function ProductDetailsPage() {
             </div>
 
             {/* Trust Badges */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="flex items-center gap-3 p-3 sm:p-4 bg-foreground/5 rounded-xl border border-foreground/5">
                 <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-400 shrink-0">
                   <ShieldCheck className="w-5 h-5" />
@@ -189,8 +211,6 @@ export default function ProductDetailsPage() {
                 </div>
               </div>
             </div>
-
-
 
           </div>
         </div>

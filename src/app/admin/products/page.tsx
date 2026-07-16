@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Image as ImageIcon, Search, Tag, Edit, Trash2 } from "lucide-react";
+import { Plus, Image as ImageIcon, Search, Tag, Edit, Trash2, X } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
 
@@ -32,9 +32,10 @@ export default function AdminProducts() {
   const [isHit, setIsHit] = useState(false);
   const [isNew, setIsNew] = useState(true);
   const [isDiscount, setIsDiscount] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+  
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const supabase = createClient();
 
@@ -52,15 +53,22 @@ export default function AdminProducts() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setImageFiles(prev => [...prev, ...files]);
+      
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
     }
+  };
+
+  const removeNewImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleEdit = (product: any) => {
@@ -73,42 +81,53 @@ export default function AdminProducts() {
     setIsHit(product.is_hit || false);
     setIsNew(product.is_new || false);
     setIsDiscount(product.is_discount || false);
-    setExistingImageUrl(product.image_url || null);
-    setImagePreview(product.image_url || null);
-    setImageFile(null);
+    
+    if (product.image_url) {
+      setExistingImages(product.image_url.split(','));
+    } else {
+      setExistingImages([]);
+    }
+    
+    setImageFiles([]);
+    setImagePreviews([]);
     setIsFormOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !price || (!imageFile && !existingImageUrl)) {
-      alert("Пожалуйста, заполните название, цену и фото");
+    if (!name || !price || (imageFiles.length === 0 && existingImages.length === 0)) {
+      alert("Пожалуйста, заполните название, цену и добавьте хотя бы одно фото");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      let finalImageUrl = existingImageUrl;
+      const uploadedUrls: string[] = [];
 
-      // 1. Upload new image if provided
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `product-images/${fileName}`;
+      // 1. Upload new images if provided
+      if (imageFiles.length > 0) {
+        for (const file of imageFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const filePath = `product-images/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('products')
-          .upload(filePath, imageFile);
+          const { error: uploadError } = await supabase.storage
+            .from('products')
+            .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+          if (uploadError) throw uploadError;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('products')
-          .getPublicUrl(filePath);
-          
-        finalImageUrl = publicUrl;
+          const { data: { publicUrl } } = supabase.storage
+            .from('products')
+            .getPublicUrl(filePath);
+            
+          uploadedUrls.push(publicUrl);
+        }
       }
+
+      // Combine existing images that weren't deleted with newly uploaded images
+      const finalImageUrls = [...existingImages, ...uploadedUrls].join(',');
 
       // 2. Prepare Data
       const productData = {
@@ -116,7 +135,7 @@ export default function AdminProducts() {
         description: description || null,
         price: parseFloat(price),
         old_price: oldPrice ? parseFloat(oldPrice) : null,
-        image_url: finalImageUrl,
+        image_url: finalImageUrls,
         is_hit: isHit,
         is_new: isNew,
         is_discount: isDiscount || !!oldPrice,
@@ -174,9 +193,9 @@ export default function AdminProducts() {
     setIsHit(false);
     setIsNew(true);
     setIsDiscount(false);
-    setImageFile(null);
-    setImagePreview(null);
-    setExistingImageUrl(null);
+    setImageFiles([]);
+    setImagePreviews([]);
+    setExistingImages([]);
   };
 
   const closeForm = () => {
@@ -209,31 +228,52 @@ export default function AdminProducts() {
             
             {/* Left Column - Image Upload */}
             <div className="flex flex-col gap-4">
-              <label className="text-sm font-medium text-foreground/70">Фотография товара *</label>
-              <div 
-                className={`relative flex flex-col items-center justify-center w-full aspect-square md:aspect-auto md:h-80 border-2 border-dashed rounded-3xl overflow-hidden transition-colors ${imagePreview ? 'border-primary/50 bg-primary/5' : 'border-card-border bg-input hover:bg-input/80'}`}
-              >
-                {imagePreview ? (
-                  <>
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="text-white font-medium bg-black/50 px-4 py-2 rounded-full">Изменить фото</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-center p-6">
-                    <ImageIcon className="w-12 h-12 text-foreground/20 mb-4" />
-                    <p className="text-foreground/70 font-medium mb-1">Нажмите для загрузки</p>
-                    <p className="text-xs text-foreground/40">PNG, JPG или WebP до 5MB</p>
+              <label className="text-sm font-medium text-foreground/70 flex justify-between">
+                <span>Фотографии товара *</span>
+                <span className="text-xs text-foreground/40">Первое фото — главное</span>
+              </label>
+              
+              <div className="grid grid-cols-3 gap-2">
+                {/* Existing Images */}
+                {existingImages.map((img, idx) => (
+                  <div key={`existing-${idx}`} className="relative aspect-square border border-card-border rounded-xl overflow-hidden group">
+                    <img src={img} alt={`Existing ${idx}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeExistingImage(idx)}
+                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
                   </div>
-                )}
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleImageChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                  required={!existingImageUrl}
-                />
+                ))}
+                
+                {/* New Previews */}
+                {imagePreviews.map((img, idx) => (
+                  <div key={`new-${idx}`} className="relative aspect-square border border-primary/50 bg-primary/5 rounded-xl overflow-hidden group">
+                    <img src={img} alt={`New ${idx}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeNewImage(idx)}
+                      className="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Upload Button */}
+                <label className="relative aspect-square flex flex-col items-center justify-center border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
+                  <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
+                  <span className="text-xs text-foreground/40 font-medium">Добавить</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple
+                    onChange={handleImageChange}
+                    className="hidden" 
+                  />
+                </label>
               </div>
             </div>
 
@@ -349,12 +389,15 @@ export default function AdminProducts() {
                 </tr>
               </thead>
               <tbody>
-                {products.length > 0 ? products.map((product) => (
+                {products.length > 0 ? products.map((product) => {
+                  const firstImg = product.image_url ? product.image_url.split(',')[0] : '';
+                  
+                  return (
                   <tr key={product.id} className="border-b border-card-border hover:bg-foreground/[0.02] transition-colors group">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-foreground/5 flex-shrink-0 overflow-hidden">
-                          <img src={product.image_url} alt="" className="w-full h-full object-cover" />
+                          <img src={firstImg} alt="" className="w-full h-full object-cover" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-foreground">{product.name}</p>
@@ -382,7 +425,6 @@ export default function AdminProducts() {
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      {/* Убрал opacity-0 чтобы кнопки всегда было видно и на телефоне тоже */}
                       <div className="flex items-center justify-end gap-2 transition-opacity">
                         <button onClick={() => handleEdit(product)} className="p-1.5 text-foreground/50 hover:text-foreground hover:bg-foreground/10 rounded-md transition-colors">
                           <Edit className="w-4 h-4" />
@@ -393,7 +435,7 @@ export default function AdminProducts() {
                       </div>
                     </td>
                   </tr>
-                )) : (
+                )}) : (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-foreground/40">
                       У вас пока нет добавленных товаров. Нажмите "Добавить товар".

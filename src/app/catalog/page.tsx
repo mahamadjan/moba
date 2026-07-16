@@ -178,7 +178,7 @@ function CatalogContent() {
                     name: product.name,
                     price: product.price,
                     oldPrice: product.old_price,
-                    imageUrl: product.image_url,
+                    imageUrl: product.image_url?.split(',')[0] || '',
                     isNew: product.is_new,
                     isHit: product.is_hit,
                     discount: (product.old_price && product.price < product.old_price) 

@@ -32,7 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
       id: product.id,
       name: product.name,
       price: product.price,
-      imageUrl: product.imageUrl,
+      imageUrl: product.imageUrl?.split(',')[0] || '',
     });
   };
 
@@ -83,7 +83,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product.id}`} className="block relative w-full pt-[100%] bg-white/5 overflow-hidden rounded-2xl">
         {/* object-cover ensures the image fills the entire square strictly, cropping edges if needed, so all photos look like uniform squares */}
         <img
-          src={product.imageUrl}
+          src={product.imageUrl?.split(',')[0] || ''}
           alt={product.name}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
