@@ -11,6 +11,7 @@ interface Product {
   price: number;
   oldPrice?: number;
   imageUrl: string;
+  images?: string[];
   rating?: number;
   reviewsCount?: number;
   isNew?: boolean;
@@ -80,14 +81,44 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Image Container (Full bleed perfectly square) */}
-      <Link href={`/product/${product.id}`} className="block relative w-full pt-[100%] bg-white/5 overflow-hidden rounded-2xl">
-        {/* object-cover ensures the image fills the entire square strictly, cropping edges if needed, so all photos look like uniform squares */}
-        <img
-          src={product.imageUrl?.split(',')[0] || ''}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-      </Link>
+      <div className="relative w-full pt-[100%] bg-white/5 overflow-hidden rounded-2xl group/image">
+        {product.images && product.images.length > 1 ? (
+          <>
+            <div 
+              className="absolute inset-0 flex overflow-x-auto snap-x snap-mandatory scroll-smooth pointer-events-auto"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {product.images.map((img, idx) => (
+                <Link 
+                  key={idx} 
+                  href={`/product/${product.id}`} 
+                  className="w-full h-full flex-shrink-0 snap-center block relative"
+                >
+                  <img
+                    src={img}
+                    alt={`${product.name} - ${idx + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </Link>
+              ))}
+            </div>
+            {/* Minimal Dots */}
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 pointer-events-none z-10">
+              {product.images.map((_, idx) => (
+                <div key={idx} className="w-1.5 h-1.5 rounded-full bg-white/70 shadow-sm" />
+              ))}
+            </div>
+          </>
+        ) : (
+          <Link href={`/product/${product.id}`} className="absolute inset-0 block">
+            <img
+              src={product.imageUrl?.split(',')[0] || ''}
+              alt={product.name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </Link>
+        )}
+      </div>
 
       {/* Product Info */}
       <div className="flex flex-col flex-grow mt-2 relative z-10">

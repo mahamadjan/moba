@@ -268,14 +268,16 @@ export default function AdminProducts() {
               </div>
 
               {/* Upload Button (Standard OS Native for maximum compatibility) */}
-              <input 
-                key={`file-input-${imageFiles.length}-${existingImages.length}`}
-                type="file" 
-                accept="image/*" 
-                multiple
-                onChange={handleImageChange}
-                className="block w-full text-sm text-foreground/70 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 transition-all cursor-pointer" 
-              />
+              <div className="flex flex-col gap-2 mt-4 items-center">
+                <input 
+                  key={`file-input-${imageFiles.length}-${existingImages.length}`}
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange}
+                  className="block w-full max-w-sm text-sm text-foreground/70 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 transition-all cursor-pointer" 
+                />
+                <span className="text-xs text-foreground/50">Нажимайте эту кнопку для добавления каждого нового фото (по одному).</span>
+              </div>
             </div>
 
             {/* Right Column - Details */}
