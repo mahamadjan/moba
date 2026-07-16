@@ -60,6 +60,7 @@ export default function AdminProducts() {
       const newPreviews = files.map(file => URL.createObjectURL(file));
       setImagePreviews(prev => [...prev, ...newPreviews]);
     }
+    e.target.value = '';
   };
 
   const removeNewImage = (index: number) => {
