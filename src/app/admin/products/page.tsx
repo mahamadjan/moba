@@ -234,7 +234,7 @@ export default function AdminProducts() {
                 <span className="text-xs text-foreground/40">Первое фото — главное</span>
               </label>
               
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2 mb-3">
                 {/* Existing Images */}
                 {existingImages.map((img, idx) => (
                   <div key={`existing-${idx}`} className="relative w-full pt-[100%] border border-card-border rounded-xl overflow-hidden group">
@@ -262,23 +262,17 @@ export default function AdminProducts() {
                     </button>
                   </div>
                 ))}
-
-                {/* Upload Button */}
-                <div className="relative w-full pt-[100%] border-2 border-dashed border-card-border bg-input hover:bg-input/80 rounded-xl cursor-pointer transition-colors group">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
-                    <span className="text-xs text-foreground/40 font-medium">Добавить</span>
-                  </div>
-                  <input 
-                    key={`file-input-${imageFiles.length}-${existingImages.length}`}
-                    type="file" 
-                    accept="image/jpeg, image/png, image/webp" 
-                    multiple
-                    onChange={handleImageChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" 
-                  />
-                </div>
               </div>
+
+              {/* Upload Button (Standard OS Native for maximum compatibility) */}
+              <input 
+                key={`file-input-${imageFiles.length}-${existingImages.length}`}
+                type="file" 
+                accept="image/*" 
+                multiple
+                onChange={handleImageChange}
+                className="block w-full text-sm text-foreground/70 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80 transition-all cursor-pointer" 
+              />
             </div>
 
             {/* Right Column - Details */}

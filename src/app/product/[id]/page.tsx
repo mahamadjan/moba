@@ -14,7 +14,7 @@ export default function ProductDetailsPage() {
 
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,9 +31,6 @@ export default function ProductDetailsPage() {
         console.error("Error fetching product:", error);
       } else {
         setProduct(data);
-        if (data.image_url) {
-          setSelectedImage(data.image_url.split(',')[0]);
-        }
       }
       setLoading(false);
     };
@@ -87,7 +84,7 @@ export default function ProductDetailsPage() {
         <div className="bg-card border border-card-border rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
           
           {/* TOP/LEFT: Photo Area */}
-          <div className="w-full md:w-1/2 bg-foreground/5 relative flex flex-col p-6 sm:p-8 min-h-[300px] md:min-h-[500px]">
+          <div className="w-full md:w-1/2 bg-foreground/5 relative flex flex-col min-h-[350px] md:min-h-[500px]">
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
               {product.is_discount && (
@@ -102,28 +99,38 @@ export default function ProductDetailsPage() {
               )}
             </div>
             
-            {/* Main Image */}
-            <div className="flex-1 flex items-center justify-center mb-6">
-              <img 
-                src={selectedImage} 
-                alt={product.name}
-                className="w-full h-full max-h-[350px] object-contain drop-shadow-2xl transition-all duration-300"
-              />
+            {/* Swipeable Carousel Container */}
+            <div 
+              className="flex-1 w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              onScroll={(e) => {
+                const scrollLeft = e.currentTarget.scrollLeft;
+                const width = e.currentTarget.clientWidth;
+                const index = Math.round(scrollLeft / width);
+                if (index !== activeIndex) {
+                  setActiveIndex(index);
+                }
+              }}
+            >
+              {images.map((img: string, idx: number) => (
+                <div key={idx} className="w-full shrink-0 snap-center flex items-center justify-center p-8 sm:p-12 relative">
+                  <img 
+                    src={img} 
+                    alt={`${product.name} ${idx + 1}`}
+                    className="w-full h-full max-h-[350px] md:max-h-[450px] object-contain drop-shadow-2xl"
+                  />
+                </div>
+              ))}
             </div>
 
-            {/* Thumbnails */}
+            {/* Indicator Dots */}
             {images.length > 1 && (
-              <div className="flex items-center justify-center gap-3 mt-auto overflow-x-auto custom-scrollbar pb-2">
-                {images.map((img: string, idx: number) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(img)}
-                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 overflow-hidden shrink-0 transition-all ${
-                      selectedImage === img ? 'border-primary shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-card-border hover:border-primary/50'
-                    }`}
-                  >
-                    <img src={img} className="w-full h-full object-cover bg-white/5 p-1" alt={`Thumbnail ${idx}`} />
-                  </button>
+              <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 z-10">
+                {images.map((_: string, idx: number) => (
+                  <div 
+                    key={`dot-${idx}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${idx === activeIndex ? 'w-6 bg-primary shadow-[0_0_10px_rgba(255,212,0,0.5)]' : 'w-2 bg-foreground/20'}`}
+                  />
                 ))}
               </div>
             )}
