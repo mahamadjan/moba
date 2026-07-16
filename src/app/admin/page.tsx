@@ -62,14 +62,20 @@ export default function AdminDashboard() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
       });
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Ошибка сервера");
+      }
+      
       alert("Настройки успешно сохранены!");
-    } catch (e) {
-      alert("Ошибка при сохранении настроек.");
+    } catch (e: any) {
+      alert("Ошибка при сохранении настроек: " + e.message + "\n\nВозможно, вы еще не создали таблицу site_settings в Supabase!");
     } finally {
       setIsSaving(false);
     }
