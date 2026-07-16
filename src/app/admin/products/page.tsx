@@ -268,6 +268,7 @@ export default function AdminProducts() {
                   <Plus className="w-6 h-6 text-foreground/30 group-hover:text-primary transition-colors mb-1" />
                   <span className="text-xs text-foreground/40 font-medium">Добавить</span>
                   <input 
+                    key={`file-input-${imageFiles.length}-${existingImages.length}`}
                     type="file" 
                     accept="image/*" 
                     multiple
